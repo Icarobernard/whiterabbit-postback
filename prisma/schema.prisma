@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String          @id @default(cuid())
+  email         String          @unique
+  name          String?
+  password      String
+  createdAt     DateTime        @default(now())
+  webhookConfigs WebhookConfig[]
+  postbackLogs  PostbackLog[]
+}
+
+model WebhookConfig {
+  id           String        @id @default(cuid())
+  userId       String
+  platform     String        // "hotmart" | "kiwify"
+  label        String
+  secret       String?       // hottok (hotmart) or token header (kiwify)
+  isTest       Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postbacks    PostbackLog[]
+}
+
+model PostbackLog {
+  id              String        @id @default(cuid())
+  userId          String
+  webhookConfigId String
+  platform        String        // "hotmart" | "kiwify"
+  event           String        // e.g. PURCHASE_APPROVED, compra_aprovada
+  rawPayload      String        // JSON stored as string in SQLite
+  buyerName       String?
+  buyerEmail      String?
+  productName     String?
+  amount          Float?
+  currency        String?
+  status          String?
+  transactionId   String?
+  tokenValid      Boolean       @default(true)
+  receivedAt      DateTime      @default(now())
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  config          WebhookConfig @relation(fields: [webhookConfigId], references: [id], onDelete: Cascade)
+}
