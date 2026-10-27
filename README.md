@@ -265,3 +265,9 @@ O escopo foi mantido pequeno conforme o briefing. A arquitetura de parsers isola
 | NextAuth.js | v5 beta | Autenticação |
 | bcryptjs | — | Hash de senhas |
 | Zod | — | Validação de schema |
+
+## Interface do projeto
+
+<p align="center">
+  <img src="./Interface.png" alt="Interface do WhiteRabbit" width="800">
+</p>
